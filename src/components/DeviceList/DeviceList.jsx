@@ -33,7 +33,6 @@ export default function DeviceList({ image, wellName, brand, id, deviceData, upd
           return "VFD";
       }
     }
-    print("Ultimo Hijo")
     return "GDN";
   }
 
