@@ -1,15 +1,13 @@
-import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import Proptypes from "prop-types";
 import { Link } from "react-router-dom";
-import { GrayColor, GrayLightColor } from "../../utils/colors";
+import { GrayLightColor, GreenColor } from "../../utils/colors";
 import { BCP_APP, ESP_APP, RODLIFT_APP, VFDDevice } from "../../utils/enums";
+import { Avatar } from "@mui/material";
 
 DeviceList.propTypes = {
   image: Proptypes.string.isRequired,
@@ -53,10 +51,21 @@ export default function DeviceList({ image, wellName, brand, id, deviceData, upd
 
   return (
     <Link to={`/mainApp/detailView/${id}`} style={{ textDecoration: 'none' }}>
-      <Card sx={{ display: "flex", justifyContent: "space-around", backgroundColor: GrayLightColor, boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.6)', borderRadius: 0 }} onClick={updateHeader()}>
+      <Card sx={{ display: "flex", justifyContent: "space-around", backgroundColor: GrayLightColor, boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.6)', borderRadius: 0, position: "relative"}} onClick={updateHeader()}>
+
+        <Avatar sx={{
+          backgroundColor: deviceData.status == "online" ? "#00FF00" : "#FF0000",
+          border: `2px solid ${GreenColor}`,
+          color: deviceData.status == "online" ? "#00FF00" : "#FF0000",
+          width: 20,
+          height: 20,
+          position: "absolute",
+          right: 0
+        }}/>
+
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           <CardContent sx={{ flex: "1 0 auto"}}>
-            <Typography >
+            <Typography>
               <span style={{ fontWeight: 'bold' }} > 
                 {getDeviceName()}{" S/N: "}        
               </span>

@@ -15,12 +15,14 @@ import AddModeratorIcon from "@mui/icons-material/AddModerator";
 import { urlRest } from "../utils/utildata";
 import { validarIP } from "../utils/utilsFunc";
 import { useSnackbar } from "notistack";
-import { BCP_APP, ESP_APP, GuardianDevice, RODLIFT_APP, VFDDevice } from "../utils/enums";
+import { BCP_APP, ESP_APP, GuardianDevice, HPS_Guardian, RODLIFT_APP, Standard_Guardian, VFDDevice } from "../utils/enums";
 import React from "react";
-import { BlackColor } from "../utils/colors";
+import { useNavigate } from 'react-router-dom';
 
-export default function AddDevice() {
+
+export default function AddDevice(){
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   const [brand, setBrand] = React.useState('')
   const [device, setDevice]  = React.useState('');
   const [application, setApplication] = React.useState('');
@@ -35,7 +37,7 @@ export default function AddDevice() {
     setApplication(event.target.value );
   };
 
-  const handleVFDSubmit = (event) => {
+  const handleVFDSubmit = async (event) => {
     let errors = {};
     event.preventDefault();
 
@@ -55,13 +57,14 @@ export default function AddDevice() {
     }
 
     if (Object.keys(errors).length > 0) {
-      //event.currentTarget.reset();
       Object.values(errors).forEach((element) => {
         enqueueSnackbar(element);
       });
       return;
-    } else {
-      fetch(urlRest + "/api/vfd/add", {
+    } 
+
+    try {
+      const response = await fetch(urlRest + "/api/vfd/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,9 +81,21 @@ export default function AddDevice() {
           device: data.get('deviceName'),
           application: data.get('applicationName')
         }),
-      }).then((response) => response.json());
+      });
+      console.log('aaaa');
+      if (!response.ok) {
+        throw new Error('Error de Red');
+      }
+
+      enqueueSnackbar('¡Dispositivo añadido correctamente!', { variant: 'success' });
+      navigate('/mainApp');
+
+    } catch (error) {
+      enqueueSnackbar('Fallo al añadir dispositivo: ' + error.message, { variant: 'error' });
     }
   };
+
+
   return (
     <Paper elevation={2} sx={{ p: 2, borderRadius: 0, backgroundColor: "#E8E8E8" }}>
       {/* Header */}
@@ -171,29 +186,27 @@ export default function AddDevice() {
             </FormControl>
           </Grid>
 
-          <Grid item xs={12} sm={6}>
-            {
-              (device == VFDDevice) && 
-              <FormControl required fullWidth>
-                <InputLabel id="applicationID-label">Application</InputLabel>
-                <Select
-                  required
-                  fullWidth
-                  value={application}
-                  labelId="applicationID-label"
-                  id="applicationID"
-                  label="Application"
-                  name="applicationName"
-                  onChange={handleApplicationChange}
-                >
-                  <MenuItem value={ESP_APP}>ESP</MenuItem>
-                  <MenuItem value={BCP_APP}>BCP</MenuItem>          
-                  <MenuItem value={RODLIFT_APP}>ROD LIFT</MenuItem>
-                </Select>
-                </FormControl>
-              
-            }
-          
+          <Grid item xs={12} sm={6}>   
+            <FormControl required fullWidth>
+              <InputLabel id="applicationID-label">Application</InputLabel>
+              <Select
+                required
+                fullWidth
+                value={application}
+                labelId="applicationID-label"
+                id="applicationID"
+                label="Application"
+                name="applicationName"
+                onChange={handleApplicationChange}
+              >
+                {(device == GuardianDevice) && <MenuItem value={Standard_Guardian}> ESTANDAR </MenuItem>}
+                {(device == GuardianDevice) && <MenuItem value={HPS_Guardian}> HPS </MenuItem>}
+                
+                {(device == VFDDevice) && <MenuItem value={ESP_APP}> ESP </MenuItem>}
+                {(device == VFDDevice) && <MenuItem value={BCP_APP}> BCP </MenuItem>}
+                {(device == VFDDevice) && <MenuItem value={RODLIFT_APP}> ROD LIFT </MenuItem>} 
+              </Select>
+            </FormControl>
           </Grid>
         </Grid>
 

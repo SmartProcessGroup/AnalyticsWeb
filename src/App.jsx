@@ -17,7 +17,6 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { Outlet } from "react-router-dom";
 import { addDeviceEntry, addDeviceEntryIcon, analisiGUDEntry, analisiGUDEntryIcon, connectedDevicesEntry, connectedDevicesEntryIcon, productionControlEntry, productionControlEntryIcon } from "./components/MenuEntries/MenuEntries";
 import * as Colors from "./utils/colors"
-import CopyRightComponent from "./components/CopyRightComponent";
 import ButtonUser from "./components/ButtonUser";
 import AnalyticsIcon from "./assets/img/analytics.png";
 
